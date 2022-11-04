@@ -1,23 +1,24 @@
 from fastapi import FastAPI
 import json, requests
+from poke_api.src.fill_pokedex import fill_pokedex
+
+
+from poke_api.src.pokemon import Pokemon
 
 app = FastAPI()
 
-class Pokemon:
-    def __init__(self, name: str, ):
-        self.name = name
+URL = 'https://pokeapi.co/api/v2/pokemon/'
+pokemons = list()
 
-response_API = requests.get('https://pokeapi.co/api/v2/pokemon/')
+
+response_API = requests.get(URL)
 data = response_API.text
-parse_jason = json.loads(data)
-info = parse_jason['results']
+parse_json = json.loads(data)
+info = parse_json['results']
+pokemons = fill_pokedex(info)
 
 
 @app.get("/pokemons")
 def pokedex():
-    pokemons = []
-    for item in info:
-
-        pokemons.append(Pokemon(item['name']))
-    
+     
     return pokemons
